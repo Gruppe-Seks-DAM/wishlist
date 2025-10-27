@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(WishListController.class)
 public class WishListControllerTest {
@@ -27,12 +26,14 @@ public class WishListControllerTest {
     private WishListService service;
 
     @Test
-    public void testGetAllWishLists() throws Exception {
+    public void testGetAllWishListsViewAndModel() throws Exception {
         List<WishList> mockList = List.of(new WishList("Test List"));
         Mockito.when(service.getAllWishLists()).thenReturn(new ArrayList<>(mockList));
 
         mockMvc.perform(get("/wishlists"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Test List"));
+                .andExpect(model().attributeExists("wishlists"))
+                .andExpect(model().attribute("wishlists", mockList))
+                .andExpect(view().name("wishlist-view"));
     }
 }
