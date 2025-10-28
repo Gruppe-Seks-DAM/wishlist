@@ -28,13 +28,12 @@ public class WishlistController {
     }
 
     // Modtag og gem data i db fra form
-    // kun titel for nu i US1.
     @PostMapping
     public String createWishlist(@Valid @ModelAttribute("wishlist") Wishlist wishlist,
                                  BindingResult result) {
         if (result.hasErrors()) return "wishlists/new";
 
         service.createWishlist(wishlist);
-        return "redirect:/wishlists";
+        return "redirect:/wishlists"; // liste oversigt (US2)
     }
 }
