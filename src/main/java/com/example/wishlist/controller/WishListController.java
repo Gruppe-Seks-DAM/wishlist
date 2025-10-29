@@ -25,6 +25,6 @@ public class WishListController {
         ArrayList<WishList> wishlist = service.getAllWishLists();
         model.addAttribute("wishlists", wishlist != null ? wishlist : new ArrayList<>());
 
-        return "wishlist-view";
+        return "wishlists";
     }
 }
