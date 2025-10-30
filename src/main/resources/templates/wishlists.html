@@ -10,7 +10,7 @@
     <main>
         <section>
             <ul>
-                <li th:each="wishlist: ${wishlists}" th:text="${wishlist.name}"></li>
+                <li th:each="wishlist: ${wishlists}" th:text="${wishlist.title}"></li>
             </ul>
             <p th:if="${wishlists == null or #lists.isEmpty(wishlists)}">Ingen tilgængelige ønskelister.</p>
         </section>

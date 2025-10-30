@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
-public class Wishlist {
+public class WishList {
     private Long id;
 
     @NotBlank(message = "Titel må ikke være tom.")
@@ -16,10 +16,10 @@ public class Wishlist {
     private Boolean isShared;
     private String shareToken;
 
-    public Wishlist() {
+    public WishList() {
     }
 
-    public Wishlist(Long id, String title, LocalDateTime createdAt, Boolean isShared, String shareToken) {
+    public WishList(Long id, String title, LocalDateTime createdAt, Boolean isShared, String shareToken) {
         this.id = id;
         this.title = title;
         this.createdAt = createdAt;

@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +28,13 @@ public class WishListControllerTest {
 
     @Test
     public void testGetAllWishListsViewAndModel() throws Exception {
-        List<WishList> mockList = List.of(new WishList("Test List"));
+        List<WishList> mockList = List.of(new WishList(12L,"testTitle", LocalDateTime.now(),true, "shareToken"));
         Mockito.when(service.getAllWishLists()).thenReturn(new ArrayList<>(mockList));
 
         mockMvc.perform(get("/wishlists"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("wishlists"))
                 .andExpect(model().attribute("wishlists", mockList))
-                .andExpect(view().name("wishlist-view"));
+                .andExpect(view().name("wishlists"));
     }
 }
