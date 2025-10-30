@@ -1,0 +1,19 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <link th:href="@{/main.css}" rel="stylesheet">
+</head>
+<body>
+    <main>
+        <section>
+            <ul>
+                <li th:each="wishlist: ${wishlists}" th:text="${wishlist.name}"></li>
+            </ul>
+            <p th:if="${wishlists == null or #lists.isEmpty(wishlists)}">Ingen tilgængelige ønskelister.</p>
+        </section>
+    </main>
+</body>
+</html>
