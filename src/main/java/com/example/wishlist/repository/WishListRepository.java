@@ -21,7 +21,11 @@ public class WishListRepository {
                 """;
 
         return (ArrayList<WishList>) jdbc.query(sql_query, (rs, i) ->
-                new WishList(rs.getLong("id"),rs.getString("title"), rs.getDate("createdAt").toLocalDate().atStartOfDay(),rs.getBoolean("isShared"),rs.getString("shareToken"))
+                new WishList(rs.getLong("id"),
+                        rs.getString("title"),
+                        rs.getDate("created_at").toLocalDate().atStartOfDay(),
+                        rs.getBoolean("is_shared"),
+                        rs.getString("share_token"))
         );
     }
 
