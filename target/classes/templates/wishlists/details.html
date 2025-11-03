@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${wishlist.title} + ' - Ønskeliste'">Ønskeliste Detaljer</title>
+  <link th:href="@{/main.css}" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<main>
+  <div class="container mt-4">
+    <!-- Back button -->
+    <div class="mb-3">
+      <a th:href="@{/wishlists}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Tilbage til oversigt
+      </a>
+    </div>
+
+    <!-- Wishlist header -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <h1 th:text="${wishlist.title}">Wishlist Title</h1>
+        <div class="d-flex align-items-center gap-3">
+                        <span th:if="${wishlist.isShared}" class="badge bg-success">
+                            <i class="fas fa-share-alt"></i> Delt
+                        </span>
+          <span th:unless="${wishlist.isShared}" class="badge bg-secondary">
+                            <i class="fas fa-lock"></i> Privat
+                        </span>
+          <small class="text-muted">
+            Oprettet: <span th:text="${#temporals.format(wishlist.createdAt, 'dd/MM/yyyy')}"></span>
+          </small>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="btn-group">
+        <a th:href="@{/wishlists/{id}/edit(id=${wishlist.id})}"
+           class="btn btn-outline-secondary">
+          <i class="fas fa-edit"></i> Rediger
+        </a>
+        <button type="button"
+                class="btn btn-outline-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal">
+          <i class="fas fa-trash"></i> Slet
+        </button>
+      </div>
+    </div>
+
+    <!-- Share token (if shared) -->
+    <div th:if="${wishlist.isShared and wishlist.shareToken != null}"
+         class="alert alert-info">
+      <h6><i class="fas fa-link"></i> Delingslink:</h6>
+      <code th:text="${'http://localhost:8080/wishlists/shared/' + wishlist.shareToken}"></code>
+      <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyShareLink()">
+        <i class="fas fa-copy"></i> Kopier
+      </button>
+    </div>
+
+    <!-- Simple message about wishes -->
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="fas fa-gift fa-3x text-muted mb-3"></i>
+        <h5>Ønsker på denne liste</h5>
+        <p class="text-muted">Funktionalitet for at vise ønsker kommer snart.</p>
+        <p class="text-muted">Wish ID: <span th:text="${wishlist.id}"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Bekræft sletning</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Er du sikker på, at du vil slette ønskelisten "<span th:text="${wishlist.title}"></span>"?</p>
+          <p class="text-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Advarsel:</strong> Denne handling kan ikke fortrydes!
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuller</button>
+          <form th:action="@{/wishlists/{id}(id=${wishlist.id})}" method="post">
+            <input type="hidden" name="_method" value="delete" />
+            <button type="submit" class="btn btn-danger">
+              <i class="fas fa-trash"></i> Slet
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Copy share link function -->
+<script>
+  function copyShareLink() {
+    const shareLink = document.querySelector('.alert-info code').textContent;
+    navigator.clipboard.writeText(shareLink).then(function() {
+      alert('Delingslink kopieret!');
+    });
+  }
+</script>
+</body>
+</html>
