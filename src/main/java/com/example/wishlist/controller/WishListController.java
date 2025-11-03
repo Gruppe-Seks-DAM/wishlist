@@ -6,10 +6,8 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 
@@ -27,8 +25,64 @@ public class WishListController {
     public String getAllWishLists(Model model) {
         ArrayList<WishList> wishlist = service.getAllWishLists();
         model.addAttribute("wishlists", wishlist != null ? wishlist : new ArrayList<>());
-
         return "wishlists";
+    }
+
+    // GET /wishlists/{id} - View single wishlist
+    @GetMapping("/{id}")
+    public String getWishlistById(@PathVariable Long id, Model model) {
+        WishList wishlist = service.findById(id)
+                .orElseThrow(() -> new RuntimeException("Wishlist not found with id: " + id));
+        model.addAttribute("wishlist", wishlist);
+        // Add this when you have wishes
+
+//         List<Wish> wishes = wishRepository.findByWishlistId(id);
+//         model.addAttribute("wishes", wishes);
+        return "wishlists/details"; // This will show the individual wishlist page
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editWishlistForm(@PathVariable Long id, Model model) {
+        WishList wishlist = service.findById(id)
+                .orElseThrow(() -> new RuntimeException("Wishlist not found"));
+        model.addAttribute("wishlist", wishlist);
+        return "wishlists/edit";
+    }
+
+    @PatchMapping("/{id}")
+    public String updateWishlistTitle(@PathVariable Long id,
+                                      @RequestParam String title,
+                                      RedirectAttributes redirectAttributes) {
+
+        // Manual validation - simple and works
+        if (title == null || title.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Titel må ikke være tom.");
+            return "redirect:/wishlists/" + id + "/edit";
+        }
+
+        if (title.length() > 100) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Titel må være højst på 100 tegn");
+            return "redirect:/wishlists/" + id + "/edit";
+        }
+
+        try {
+            service.updateTitle(id, title);
+            redirectAttributes.addFlashAttribute("successMessage", "Ønskelisten er opdateret");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Fejl ved opdatering: " + e.getMessage());
+        }
+        return "redirect:/wishlists";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteWishlist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            service.delete(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Ønskelisten er slettet");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Fejl ved sletning: " + e.getMessage());
+        }
+        return "redirect:/wishlists";
     }
 
     // Vis form

@@ -7,3 +7,13 @@ CREATE TABLE WISHLISTS (
     share_token varchar(36)
 );
 
+CREATE TABLE IF NOT EXISTS WISHES (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    url VARCHAR(500),
+    price DECIMAL(10,2),
+    wishlist_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (wishlist_id) REFERENCES wishlists(id) ON DELETE CASCADE
+);

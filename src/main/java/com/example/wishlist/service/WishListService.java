@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,5 +27,23 @@ public class WishListService {
         wishlist.setShareToken(UUID.randomUUID().toString());
 
         repository.createWishList(wishlist);
+    }
+
+    public Optional<WishList> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    public void updateTitle(Long id, String newTitle) {
+        boolean updated = repository.updateTitle(id, newTitle);
+        if (!updated) {
+            throw new RuntimeException("Wishlist not found with id: " + id);
+        }
+    }
+
+    public void delete(Long id) {
+        boolean deleted = repository.delete(id);
+        if (!deleted) {
+            throw new RuntimeException("Wishlist not found with id: " + id);
+        }
     }
 }
