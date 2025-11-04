@@ -46,4 +46,17 @@ public class WishListService {
             throw new RuntimeException("Wishlist not found with id: " + id);
         }
     }
+
+    public void updateWish(Long wid, Wish wish) {
+        boolean updated = repo.update(wid, wish);
+        if (!updated) {
+            throw new RuntimeException("Kunne ikke opdatere ønsket med id: " + wish.getId());
+        }
+    }
+
+    public void deleteWish(Long wid, Long id) {
+        boolean deleted = repo.delete(wid, id);
+        if (!deleted) {
+            throw new RuntimeException("Kunne ikke slette ønsket med id: " + id);
+        }
 }
