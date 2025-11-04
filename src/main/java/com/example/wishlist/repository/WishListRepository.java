@@ -98,4 +98,16 @@ public class WishListRepository {
             return wishlist;
         }
     }
+
+    public boolean update(Long wid, Wish w) {
+        String sql = """
+      UPDATE wishes
+      SET name = ?, description = ?, url = ?, price = ?
+      WHERE id = ? AND wishlist_id = ?
+    """;
+        int rows = jdbc.update(sql,
+                w.getName(), w.getDescription(), w.getUrl(), w.getPrice(),
+                w.getId(), wid);
+        return rows > 0;
+    }
 }

@@ -110,4 +110,22 @@ public class WishListController {
         model.addAttribute("wid", wid);
         return "editWish";
     }
+
+    // PATCH /wishlists/{wid}/wishes/{id} - opdaterer et ønske
+    @PatchMapping("/{wid}/wishes/{id}")
+    public String updateWish(@PathVariable Long wid,
+                             @PathVariable Long id,
+                             @ModelAttribute("wish") Wish wish,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            wish.setId(id);
+            wish.setWishlistId(wid);
+            service.updateWish(wid, wish);
+            redirectAttributes.addFlashAttribute("successMessage", "Ønske opdateret.");
+            return "redirect:/wishlists/" + wid;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Fejl ved opdatering: " + e.getMessage());
+            return "redirect:/wishlists/" + wid + "/wishes/" + id + "/edit";
+        }
+    }
 }
