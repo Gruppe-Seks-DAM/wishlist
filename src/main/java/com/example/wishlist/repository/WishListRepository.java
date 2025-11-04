@@ -99,20 +99,20 @@ public class WishListRepository {
         }
     }
 
-    public boolean update(Long wid, Wish w) {
-        String sql = """
-      UPDATE wishes
-      SET name = ?, description = ?, url = ?, price = ?
-      WHERE id = ? AND wishlist_id = ?
-    """;
-        int rows = jdbc.update(sql,
-                w.getName(), w.getDescription(), w.getUrl(), w.getPrice(),
-                w.getId(), wid);
-        return rows > 0;
-    }
+//    public boolean update(Long wid, Wish w) {
+//        String sql = """
+//      UPDATE wishes
+//      SET name = ?, description = ?, url = ?, price = ?
+//      WHERE id = ? AND wishlist_id = ?
+//    """;
+//        int rows = jdbc.update(sql,
+//                w.getName(), w.getDescription(), w.getUrl(), w.getPrice(),
+//                w.getId(), wid);
+//        return rows > 0;
+//    }
 
-    public boolean delete(Long wid, Long id) {
-        String sql = "DELETE FROM wishes WHERE id = ? AND wishlist_id = ?";
-        return jdbc.update(sql, id, wid) > 0;
-    }
+//    public boolean delete(Long wid, Long id) {
+//        String sql = "DELETE FROM wishes WHERE id = ? AND wishlist_id = ?";
+//        return jdbc.update(sql, id, wid) > 0;
+//    }
 }

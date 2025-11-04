@@ -143,7 +143,7 @@
           <div th:each="wish : ${wishes}" class="border-bottom pb-3 mb-3">
             <div class="d-flex justify-content-between align-items-start">
               <div class="flex-grow-1">
-                <h6 th:text="${wish.title}" class="mb-1"></h6>
+                <h6  class="mb-1"><a th:href="@{/wishlists/{id}/wishes/{wid}/edit(id=${wishlist.id},wid=${wish.id})}" th:text="${wish.title}"></a></h6>
                 <div class="d-flex gap-3 align-items-center flex-wrap">
                   <div th:if="${wish.price}" class="text-success fw-bold">
                     <span th:text="${#numbers.formatCurrency(wish.price)}"></span>

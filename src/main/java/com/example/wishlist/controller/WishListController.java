@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/wishlists")
@@ -95,13 +96,14 @@ public class WishListController {
     }
 
 
-    // Vis form for rediger ønske
-    @GetMapping("/{wid}/wishes/{id}/edit")
-    public String editWishForm(@PathVariable Long wid, @PathVariable Long id, Model model) {
-        Wish wish = service.getWish(wid, id);
+    @GetMapping("/{wishlistId}/wishes/{wishId}/edit")
+    public String editWishForm(@PathVariable Long wishlistId,
+                               @PathVariable Long wishId,
+                               Model model) {
+        Wish wish = wishRepository.findById(wishId)
+                .orElseThrow(() -> new RuntimeException("Wish not found"));
         model.addAttribute("wish", wish);
-        model.addAttribute("wid", wid);
-        return "editWish";
+        return "wishlists/editWish";
     }
 
     // PATCH /wishlists/{wid}/wishes/{id} - opdaterer et ønske
@@ -113,7 +115,7 @@ public class WishListController {
         try {
             wish.setId(id);
             wish.setWishlistId(wid);
-            service.updateWish(wid, wish);
+            wishRepository.save(wish);
             redirectAttributes.addFlashAttribute("successMessage", "Ønske opdateret.");
             return "redirect:/wishlists/" + wid;
         } catch (Exception e) {
