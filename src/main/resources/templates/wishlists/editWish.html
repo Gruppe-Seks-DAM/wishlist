@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Redigér ønske</title>
+</head>
+<body>
+<h1>Redigér ønske</h1>
+
+<form th:action="@{|/wishlists/${wid}/wishes/${wish.id}|}" th:object="${wish}" method="post">
+    <input type="hidden" name="_method" value="patch">
+
+    <label for="name">Navn</label><br>
+    <input id="name" type="text" th:field="*{name}">
+    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+
+    <label for="description">Beskrivelse</label><br>
+    <textarea id="description" th:field="*{description}"></textarea>
+    <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+
+    <label for="url">Link</label><br>
+    <input id="url" type="url" th:field="*{url}">
+    <p th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></p>
+
+    <label for="price">Pris</label><br>
+    <input id="price" type="number" step="0.01" min="0" th:field="*{price}">
+    <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
+
+    <button type="submit">Gem ændringer</button>
+</form>
+
+<form th:action="@{|/wishlists/${wid}/wishes/${wish.id}|}" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <button type="submit" onclick="return confirm('Slet dette ønske?');">Slet ønske</button>
+</form>
+
+<p><a th:href="@{|/wishlists/${wid}|}">Tilbage til ønskeseddel</a></p>
+</body>
+</html>

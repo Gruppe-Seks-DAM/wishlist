@@ -101,4 +101,13 @@ public class WishListController {
         service.createWishList(wishlist);
         return "redirect:/wishlists"; // liste oversigt (US2)
     }
+
+    // Vis form for rediger ønske
+    @GetMapping("/{wid}/wishes/{id}/edit")
+    public String editWishForm(@PathVariable Long wid, @PathVariable Long id, Model model) {
+        Wish wish = service.getWish(wid, id);
+        model.addAttribute("wish", wish);
+        model.addAttribute("wid", wid);
+        return "editWish";
+    }
 }
