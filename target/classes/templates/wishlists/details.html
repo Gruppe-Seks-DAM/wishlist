@@ -11,6 +11,16 @@
 <body>
 <main>
   <div class="container mt-4">
+    <!-- Success/Error messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+      <span th:text="${successMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+      <span th:text="${errorMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
     <!-- Back button -->
     <div class="mb-3">
       <a th:href="@{/wishlists}" class="btn btn-outline-secondary">
@@ -60,18 +70,120 @@
       </button>
     </div>
 
-    <!-- Simple message about wishes -->
+    <!-- Add Wish Form -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-plus"></i> Tilføj nyt ønske
+        </h5>
+      </div>
+      <div class="card-body">
+        <form th:action="@{/wishlists/{id}/wishes(id=${wishlist.id})}"
+              th:object="${newWish}"
+              method="post">
+
+          <!-- Title -->
+          <div class="mb-3">
+            <label for="title" class="form-label">Titel *</label>
+            <input type="text"
+                   class="form-control"
+                   id="title"
+                   th:field="*{title}"
+                   required
+                   maxlength="255"
+                   placeholder="Indtast ønskets titel">
+            <div th:if="${#fields.hasErrors('title')}" class="text-danger">
+              <span th:errors="*{title}"></span>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="mb-3">
+            <label for="price" class="form-label">Pris</label>
+            <input type="number"
+                   class="form-control"
+                   id="price"
+                   th:field="*{price}"
+                   step="0.01"
+                   min="0"
+                   placeholder="0.00">
+            <div th:if="${#fields.hasErrors('price')}" class="text-danger">
+              <span th:errors="*{price}"></span>
+            </div>
+          </div>
+
+          <!-- URL -->
+          <div class="mb-3">
+            <label for="url" class="form-label">URL (valgfri)</label>
+            <input type="url"
+                   class="form-control"
+                   id="url"
+                   th:field="*{url}"
+                   placeholder="https://example.com/produkt">
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Tilføj ønske
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Wishes List -->
     <div class="card">
-      <div class="card-body text-center py-5">
-        <i class="fas fa-gift fa-3x text-muted mb-3"></i>
-        <h5>Ønsker på denne liste</h5>
-        <p class="text-muted">Funktionalitet for at vise ønsker kommer snart.</p>
-        <p class="text-muted">Wish ID: <span th:text="${wishlist.id}"></span></p>
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-gift"></i> Ønsker
+          <span class="badge bg-primary" th:text="${#lists.size(wishes)}">0</span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <!-- Wishes list -->
+        <div th:if="${wishes != null and !#lists.isEmpty(wishes)}">
+          <div th:each="wish : ${wishes}" class="border-bottom pb-3 mb-3">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="flex-grow-1">
+                <h6 th:text="${wish.title}" class="mb-1"></h6>
+                <div class="d-flex gap-3 align-items-center flex-wrap">
+                  <div th:if="${wish.price}" class="text-success fw-bold">
+                    <span th:text="${#numbers.formatCurrency(wish.price)}"></span>
+                  </div>
+                  <div th:if="${wish.url}" class="mb-1">
+                    <a th:href="${wish.url}" target="_blank" class="small">
+                      <i class="fas fa-external-link-alt"></i> Link
+                    </a>
+                  </div>
+                  <small class="text-muted">
+                    Tilføjet: <span th:text="${#temporals.format(wish.createdAt, 'dd/MM/yyyy')}"></span>
+                  </small>
+                </div>
+              </div>
+              <div class="ms-3">
+                <form th:action="@{/wishlists/{wishlistId}/wishes/{wishId}(wishlistId=${wishlist.id}, wishId=${wish.id})}"
+                      method="post" class="d-inline">
+                  <input type="hidden" name="_method" value="delete" />
+                  <button type="submit" class="btn btn-sm btn-outline-danger"
+                          onclick="return confirm('Er du sikker på, at du vil slette dette ønske?')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state for wishes -->
+        <div th:if="${wishes == null or #lists.isEmpty(wishes)}"
+             class="text-center py-5 text-muted">
+          <i class="fas fa-gift fa-3x mb-3"></i>
+          <h6>Ingen ønsker på denne liste endnu</h6>
+          <p class="mb-0">Brug formularen ovenfor til at tilføje dit første ønske</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- Delete Wishlist Confirmation Modal -->
   <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -83,7 +195,7 @@
           <p>Er du sikker på, at du vil slette ønskelisten "<span th:text="${wishlist.title}"></span>"?</p>
           <p class="text-danger">
             <i class="fas fa-exclamation-triangle"></i>
-            <strong>Advarsel:</strong> Denne handling kan ikke fortrydes!
+            <strong>Advarsel:</strong> Alle tilknyttede ønsker vil også blive slettet!
           </p>
         </div>
         <div class="modal-footer">
