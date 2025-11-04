@@ -11,3 +11,8 @@ INSERT INTO wishlists (title, is_shared, share_token) VALUES
     ('Fødselsdagsønsker', TRUE, 'abc123'),
     ('Juleønsker', FALSE, NULL),
     ('Wishlist til sommer', TRUE, 'def456');
+
+INSERT INTO wishes (title, price, url, wishlist_id) VALUES
+    ('Ny smartphone', 5999.00, 'https://example.com/phone', 1),
+    ('Bog om programming', 299.95, 'https://example.com/book', 1),
+    ('Træningsudstyr', 1500.00, NULL, 2);
