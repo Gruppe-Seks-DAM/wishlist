@@ -128,4 +128,18 @@ public class WishListController {
             return "redirect:/wishlists/" + wid + "/wishes/" + id + "/edit";
         }
     }
+
+    // delete
+    @DeleteMapping("/{wid}/wishes/{id}")
+    public String deleteWish(@PathVariable Long wid,
+                             @PathVariable Long id,
+                             RedirectAttributes ra) {
+        try {
+            service.deleteWish(wid, id);
+            ra.addFlashAttribute("successMessage", "Ønske slettet.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", "Fejl ved sletning: " + e.getMessage());
+        }
+        return "redirect:/wishlists/" + wid;
+    }
 }

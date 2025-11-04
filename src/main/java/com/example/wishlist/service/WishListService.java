@@ -53,4 +53,10 @@ public class WishListService {
             throw new RuntimeException("Kunne ikke opdatere ønsket med id: " + wish.getId());
         }
     }
+
+    public void deleteWish(Long wid, Long id) {
+        boolean deleted = repo.delete(wid, id);
+        if (!deleted) {
+            throw new RuntimeException("Kunne ikke slette ønsket med id: " + id);
+        }
 }

@@ -110,4 +110,9 @@ public class WishListRepository {
                 w.getId(), wid);
         return rows > 0;
     }
+
+    public boolean delete(Long wid, Long id) {
+        String sql = "DELETE FROM wishes WHERE id = ? AND wishlist_id = ?";
+        return jdbc.update(sql, id, wid) > 0;
+    }
 }
