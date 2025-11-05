@@ -30,6 +30,7 @@ public class WishListControllerTest {
     @MockitoBean
     private WishRepository wishRepository; // Add this mock
 
+    //    Unit test of controller layer
     @Test
     public void testGetAllWishListsViewAndModel() throws Exception {
         List<WishList> mockList = List.of(new WishList(12L,"testTitle", LocalDateTime.now(),true, "shareToken"));
