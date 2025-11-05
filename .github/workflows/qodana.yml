@@ -2,7 +2,7 @@ name: Qodana
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 6-ts2-cicd ]
   pull_request:
 
 jobs:
