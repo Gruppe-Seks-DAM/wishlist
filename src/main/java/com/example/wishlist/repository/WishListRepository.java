@@ -33,12 +33,12 @@ public class WishListRepository {
         );
     }
 
-    public void createWishList(WishList wishlist) {
+    public int createWishList(WishList wishlist) {
         String sql = """
                 INSERT INTO wishlists (title, created_at, is_shared, share_token) 
                 VALUES (?, ?,  ?, ?)
                               """;
-        jdbc.update(sql,
+        return jdbc.update(sql,
                 wishlist.getTitle(),
                 wishlist.getCreatedAt(),
                 wishlist.getIsShared(),
@@ -99,20 +99,4 @@ public class WishListRepository {
         }
     }
 
-//    public boolean update(Long wid, Wish w) {
-//        String sql = """
-//      UPDATE wishes
-//      SET name = ?, description = ?, url = ?, price = ?
-//      WHERE id = ? AND wishlist_id = ?
-//    """;
-//        int rows = jdbc.update(sql,
-//                w.getName(), w.getDescription(), w.getUrl(), w.getPrice(),
-//                w.getId(), wid);
-//        return rows > 0;
-//    }
-
-//    public boolean delete(Long wid, Long id) {
-//        String sql = "DELETE FROM wishes WHERE id = ? AND wishlist_id = ?";
-//        return jdbc.update(sql, id, wid) > 0;
-//    }
 }
