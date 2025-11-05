@@ -2,6 +2,7 @@ package com.example.wishlist;
 
 import com.example.wishlist.controller.WishListController;
 import com.example.wishlist.model.WishList;
+import com.example.wishlist.repository.WishRepository;
 import com.example.wishlist.service.WishListService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,6 +26,9 @@ public class WishListControllerTest {
 
     @MockitoBean
     private WishListService service;
+
+    @MockitoBean
+    private WishRepository wishRepository; // Add this mock
 
     @Test
     public void testGetAllWishListsViewAndModel() throws Exception {
