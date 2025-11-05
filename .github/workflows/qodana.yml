@@ -1,10 +1,9 @@
-name: Qodana Static Analysis
+name: Qodana
 
 on:
   push:
-    branches: [ main, 6-ts2-cicd]
+    branches: [ main, 6-ts2-cicd ]
   pull_request:
-    branches: [ main, 6-ts2-cicd]
 
 jobs:
   qodana:
