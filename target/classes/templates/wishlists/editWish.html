@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rediger Ønske</title>
+    <link th:href="@{/main.css}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<main>
+    <div class="container mt-4">
+        <!-- Success/Error messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Back button -->
+        <div class="mb-3">
+            <a th:href="@{/wishlists/{id}(id=${wish.wishlistId})}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Tilbage til ønskeliste
+            </a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-edit"></i> Rediger ønske
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/wishlists/{wishlistId}/wishes/{wishId}(wishlistId=${wish.wishlistId}, wishId=${wish.id})}"
+                              method="post">
+                            <input type="hidden" name="_method" value="patch" />
+
+                            <!-- Title -->
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Titel *</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="title"
+                                       name="title"
+                                       th:value="${wish.title}"
+                                       required
+                                       maxlength="255"
+                                       placeholder="Indtast ønskets titel">
+                                <div class="form-text">Titel er påkrævet og må være højst 255 tegn.</div>
+                            </div>
+
+                            <!-- Price -->
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Pris</label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="price"
+                                       name="price"
+                                       th:value="${wish.price}"
+                                       step="0.01"
+                                       min="0"
+                                       placeholder="0.00">
+                                <div class="form-text">Pris skal være 0 eller højere. Eksempel: 199.95</div>
+                            </div>
+
+                            <!-- URL -->
+                            <div class="mb-3">
+                                <label for="url" class="form-label">URL (valgfri)</label>
+                                <input type="url"
+                                       class="form-control"
+                                       id="url"
+                                       name="url"
+                                       th:value="${wish.url}"
+                                       placeholder="https://example.com/produkt">
+                                <div class="form-text">Link til produktet online.</div>
+                            </div>
+
+                            <!-- Hidden wishlistId to ensure it's preserved -->
+                            <input type="hidden" name="wishlistId" th:value="${wish.wishlistId}" />
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Gem ændringer
+                                </button>
+                                <a th:href="@{/wishlists/{id}(id=${wish.wishlistId})}" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Annuller
+                                </a>
+                                <button type="button"
+                                        class="btn btn-outline-danger ms-auto"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal">
+                                    <i class="fas fa-trash"></i> Slet ønske
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Wish Info Card -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h6>Ønskets oplysninger:</h6>
+                        <ul class="list-unstyled small text-muted">
+                            <li th:if="${wish.createdAt}">
+                                <i class="fas fa-calendar-plus"></i>
+                                Oprettet: <span th:text="${#temporals.format(wish.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+                            </li>
+                            <li>
+                                <i class="fas fa-list"></i>
+                                Tilhører ønskeliste med ID: <span th:text="${wish.wishlistId}"></span>
+                            </li>
+                            <li th:if="${wish.id}">
+                                <i class="fas fa-fingerprint"></i>
+                                Ønske ID: <span th:text="${wish.id}"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bekræft sletning</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Er du sikker på, at du vil slette ønsket "<span th:text="${wish.title}"></span>"?</p>
+                    <p class="text-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Advarsel:</strong> Denne handling kan ikke fortrydes!
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuller</button>
+                    <form th:action="@{/wishlists/{wishlistId}/wishes/{wishId}(wishlistId=${wish.wishlistId}, wishId=${wish.id})}"
+                          method="post">
+                        <input type="hidden" name="_method" value="delete" />
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Slet ønske
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

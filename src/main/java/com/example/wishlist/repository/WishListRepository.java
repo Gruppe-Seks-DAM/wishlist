@@ -33,12 +33,12 @@ public class WishListRepository {
         );
     }
 
-    public void createWishList(WishList wishlist) {
+    public int createWishList(WishList wishlist) {
         String sql = """
                 INSERT INTO wishlists (title, created_at, is_shared, share_token) 
                 VALUES (?, ?,  ?, ?)
                               """;
-        jdbc.update(sql,
+        return jdbc.update(sql,
                 wishlist.getTitle(),
                 wishlist.getCreatedAt(),
                 wishlist.getIsShared(),
@@ -98,4 +98,5 @@ public class WishListRepository {
             return wishlist;
         }
     }
+
 }
